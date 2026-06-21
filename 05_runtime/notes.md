@@ -496,6 +496,50 @@ Step 2
 Browser Web API handles timer
 ```
 
+---
+
+## Memory Leaks — Patterns, Detection & Prevention
+
+Even single-threaded JS programs can leak memory. Common leak patterns:
+
+- **Global variables / accidental globals** — variables left on the global object remain reachable for the life of the page.
+- **Forgotten timers or intervals** — `setInterval` or pending `setTimeout` callbacks keep closures alive.
+- **Detached DOM nodes** — DOM elements removed from the document but still referenced by JS (e.g., stored in a cache) cannot be freed.
+- **Closures keeping large objects** — long-lived closures (event handlers, timers) capturing large scopes.
+- **Unbounded caches** — Maps/Sets used as caches without eviction grow indefinitely.
+
+Detection techniques:
+
+- Use Chrome DevTools Heap snapshots and compare allocations before/after interactions.
+- Use the Allocation instrumentation timeline to find detached DOM trees.
+- Look for listeners in the Event Listeners panel that should have been removed.
+
+Prevention & mitigations:
+
+- Avoid polluting the global scope. Use modules or IIFEs to limit lifetime.
+- Clear timers when no longer needed: `clearInterval` / `clearTimeout`.
+- Remove event listeners when elements are removed: `element.removeEventListener(...)`.
+- Prefer `WeakMap`/`WeakSet` for caches that should not prevent GC of keys.
+
+Example — timer leak and fix:
+
+```js
+function startPolling() {
+    const id = setInterval(() => {
+        // heavy work
+    }, 1000);
+
+    // If caller forgets to clear, interval keeps closure alive
+    return () => clearInterval(id);
+}
+
+const stop = startPolling();
+// later:
+stop(); // prevents leak by clearing interval
+```
+
+Small changes in code and discipline go a long way — teach students to ask "who holds a reference to this object, and when can it be released?".
+
 Step 3
 
 ```text

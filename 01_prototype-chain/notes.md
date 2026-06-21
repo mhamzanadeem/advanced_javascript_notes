@@ -214,3 +214,62 @@ Steps:
 4. Continue until null
 5. Return undefined if not found
 ```
+
+---
+
+## Prototype Mutation — Pitfalls & Safety
+
+Modifying prototypes at runtime is powerful but can be dangerous. Common pitfalls:
+
+- Performance cost: changing an object's prototype with `Object.setPrototypeOf` can de-optimize engines; prefer `Object.create` when establishing an inheritance relationship once.
+- Shadowing: adding a property on an object can hide a prototype property of the same name, leading to subtle bugs when code expects the prototype version to run.
+- Prototype pollution: be careful when copying untrusted objects onto prototypes — an attacker could inject properties that change behavior globally.
+
+Safe patterns:
+
+- Create objects with `Object.create(proto)` instead of repeatedly mutating prototypes.
+- Avoid altering built-in prototypes (`Array.prototype`, `Object.prototype`) in shared code.
+- Use composition over inheritance for many real-world cases.
+
+Example — shadowing vs shared method:
+
+```js
+const proto = { greet() { return `hi from proto`; } };
+const obj = Object.create(proto);
+console.log(obj.greet()); // uses prototype method
+
+obj.greet = function () { return `shadowed`; };
+console.log(obj.greet()); // now the own property shadows the prototype
+```
+
+---
+
+## Advanced `this` & Method Binding
+
+`this` is determined at call-time, not where a function is defined (except arrow functions which lexically capture `this`). Key cases:
+
+- Method call: `obj.method()` → `this` is `obj`.
+- Function extraction: `const m = obj.method; m()` → `this` becomes global/undefined in strict mode.
+- `call` / `apply` / `bind`: explicitly set `this`.
+- Arrow functions: do not have their own `this` — they inherit from the defining scope.
+
+Common bug — losing `this` when passing methods as callbacks:
+
+```js
+const user = {
+    name: 'Hamza',
+    greet() { return this.name; }
+};
+
+const fn = user.greet; // extracted
+console.log(fn()); // undefined or global name
+
+// Solutions:
+const bound = user.greet.bind(user);
+console.log(bound()); // 'Hamza'
+
+// or define method as an arrow when class/field syntax available
+// class User { greet = () => this.name }
+```
+
+When teaching, emphasize the difference between lexical `this` (arrow) and dynamic `this` (regular functions).

@@ -401,6 +401,36 @@ Clicking inside gives focus.
 
 ---
 
+## `this` in Event Handlers & Memory Considerations
+
+In DOM event listeners, `this` inside a regular function handler refers to the element the listener is bound to. Examples and gotchas:
+
+```html
+<button id="b">Click</button>
+```
+
+```js
+const btn = document.getElementById('b');
+btn.addEventListener('click', function (e) {
+	console.log(this === btn); // true
+	console.log(e.currentTarget === btn); // also true
+});
+
+// Arrow functions inherit `this` from the outer scope
+btn.addEventListener('click', (e) => {
+	console.log(this); // not the button, depends on surrounding scope
+});
+```
+
+Memory notes:
+
+- Storing DOM nodes in long-lived closures (e.g., modules or caches) can prevent them from being garbage-collected even after removal from the document.
+- Always remove listeners when elements are removed or when no longer needed: `element.removeEventListener(...)`.
+
+Prefer using `e.currentTarget` when you need a reliable reference to the element that received the event (works regardless of binding style), and avoid arrow-functions for handlers that rely on `this` being the element.
+
+---
+
 ## focus
 
 Element gains focus.
