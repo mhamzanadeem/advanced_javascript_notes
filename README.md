@@ -15,7 +15,7 @@ Topics covered:
 - Run each file with Node.js
 - Read comments first
 - Uncomment examples one-by-one
-- Try exercises in `05-exercises.js`
+- Try exercises in `07-exercises` folder
 
 
 ## Quick guide & project hierarchy
