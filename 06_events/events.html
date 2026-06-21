@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>htnml Events </title>
+</head>
+<body style="background-color: #414141; color: aliceblue;">
+    <h2>Amazing image</h2>
+    <div >
+        <ul id="images">
+            <li><img width="200px" id="photoshop" src="https://images.pexels.com/photos/3561339/pexels-photo-3561339.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt="photoshop"></li>
+            <li><img width="200px" id="japan" src="https://images.pexels.com/photos/3532553/pexels-photo-3532553.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
+            <li><img width="200px" id="river" src="https://images.pexels.com/photos/3532551/pexels-photo-3532551.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
+            <li><img width="200px" id="owl" src="https://images.pexels.com/photos/3532552/pexels-photo-3532552.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt="" ></li>
+            <li><img width="200px" id="prayer" src="https://images.pexels.com/photos/2522671/pexels-photo-2522671.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
+            <li><a style="color: aliceblue;" href="https://google.com" id="google">Google</a></li>
+        </ul>
+   </div>
+</body>
+<script>
+
+    /*
+    ------------- Traditional Event Handling --------------
+    
+    document.getElementById('owl').onclick = function(){
+         alert("owl clicked")
+    }
+    
+    document - >  represents the entire HTML page
+    getElementById() -> searches for an element having a specifc id
+    onclick -> is an event property ; event handler for click event
+    function(){ alert("owl clicked") } -> event hadnler ; anonymous function that will be executed when the click event occurs on the element with id 'owl'
+    
+    Why this approach is not preferred?
+
+       - Only one click handler can exist because the second assignment will overwrite the first one.
+
+
+    */
+
+    /*
+    ------------- Modern Event Handling --------------
+    
+    document.getElementById('owl').addEventListener('click', function(){
+         alert("owl clicked")
+    })
+    
+    document - >  represents the entire HTML page
+    getElementById() -> searches for an element having a specifc id
+    addEventListener() -> attaches an event listener to an element
+    'click' -> the type of event to listen for
+    function(){ alert("owl clicked") } -> event handler ; anonymous function that will be executed when the click event occurs on the element with id 'owl'
+    
+    Why this approach is preferred?
+
+       - it allows multiple event listeners to be attached to the same element without overwriting each other.
+
+
+    */    
+
+    // attachEvent() -> Old Internet Explorer method
+    // jQuery - on  -> Before modern JavaScript became powerful, developers used jQuery.
+
+    /*
+     ----------------------------- Event Object Properties --------------------
+     when an event occurs, the browser creates an event object that contains information about the event. 
+     This object is passed as an argument to the event handler function.
+
+        `e` contians information about click 
+
+        e.type -> useful when same handler handles multiple events
+        e.target -> the element that triggered the event
+        e.timestamp -> the time when the event occurred
+        e.preventDefault() -> prevents the default action associated with the event (e.g., following a link)
+        e.stopPropagation() -> stops the event from bubbling up to parent elements
+
+
+
+    
+    */
+
+    /*
+    ----------------------------- Event Bubbling --------------------
+    When an event occurs on an element, it first runs the handlers on it, then on its parent, then all the way up on other ancestors.
+   
+   
+     document.getElementById('images').addEventListener('click', function(e){
+     console.log("clicked inside the ul");
+     }, false)
+    
+    here `false` indicates that the event listener is in the bubbling phase.
+    If it were `true`, it would be in the `capturing phase`.
+
+    */
+
+
+    // document.getElementById('images').addEventListener('click', function(e){
+    //     console.log("clicked inside the ul");
+    // }, false)
+
+    // document.getElementById('owl').addEventListener('click', function(e){
+    //     console.log("owl clicked");
+    //     e.stopPropagation()
+    // }, false)
+    
+    // document.getElementById('google').addEventListener('click',function(e){
+    //     e.preventDefault();
+    //     e.stopPropagation()
+    //     console.log("google clicked");
+    // }, false)
+   
+    
+    // document.querySelector('#images').addEventListener('click', function(e){
+    //     console.log(e.target.tagName);
+    //     if (e.target.tagName === 'IMG') {
+    //         console.log(e.target.id);
+    //         let removeIt = e.target.parentNode
+    //         removeIt.remove()
+    //     }
+    
+        
+    // })
+    
+    //removeIt.parentNode.removeChild(removeIt)
+    
+</script>
+</html>
